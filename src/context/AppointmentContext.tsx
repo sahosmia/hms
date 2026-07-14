@@ -21,8 +21,8 @@ const AppointmentContext = createContext<AppointmentContextType | undefined>(und
 const initialDoctors: Doctor[] = [
   {
     id: 'doc-1',
-    name: 'ডাঃ আশরাফুল ইসলাম (Dr. Ashraful Islam)',
-    specialty: 'Cardiology (হৃদরোগ বিশেষজ্ঞ)',
+    name: 'Dr. Ashraful Islam',
+    specialty: 'Cardiology Specialist',
     experience: 15,
     rating: 4.8,
     reviewCount: 42,
@@ -34,9 +34,9 @@ const initialDoctors: Doctor[] = [
     reviews: [
       {
         id: 'rev-1',
-        patientName: 'করিম শেখ (Karim Sheikh)',
+        patientName: 'Karim Sheikh',
         rating: 5,
-        comment: 'অনেক যত্ন সহকারে রোগী দেখেন এবং পরামর্শ দেন।',
+        comment: 'Very attentive doctor. Prescribed highly effective medications and explained everything carefully.',
         anonymous: false,
         createdAt: '2026-07-01'
       }
@@ -44,8 +44,8 @@ const initialDoctors: Doctor[] = [
   },
   {
     id: 'doc-2',
-    name: 'ডাঃ ফাতেমা জোহরা (Dr. Fatema Zohra)',
-    specialty: 'Gynecology (স্ত্রীরোগ ও প্রসূতি বিশেষজ্ঞ)',
+    name: 'Dr. Fatema Zohra',
+    specialty: 'Gynecology & Obstetrics',
     experience: 12,
     rating: 4.9,
     reviewCount: 56,
@@ -57,9 +57,9 @@ const initialDoctors: Doctor[] = [
     reviews: [
       {
         id: 'rev-2',
-        patientName: 'তানিয়া সুলতানা (Taniya Sultana)',
+        patientName: 'Taniya Sultana',
         rating: 5,
-        comment: 'ব্যবহার খুবই চমৎকার, ওষুধে দারুণ কাজ হয়েছে।',
+        comment: 'Wonderful behavior and highly competent surgeon. Strongly recommended.',
         anonymous: true,
         createdAt: '2026-07-05'
       }
@@ -67,8 +67,8 @@ const initialDoctors: Doctor[] = [
   },
   {
     id: 'doc-3',
-    name: 'ডাঃ সাজ্জাদ হোসেন (Dr. Sajjad Hossain)',
-    specialty: 'Pediatrics (শিশু বিশেষজ্ঞ)',
+    name: 'Dr. Sajjad Hossain',
+    specialty: 'Pediatrics Specialist',
     experience: 8,
     rating: 4.6,
     reviewCount: 29,
@@ -81,8 +81,8 @@ const initialDoctors: Doctor[] = [
   },
   {
     id: 'doc-4',
-    name: 'ডাঃ মোস্তাফিজুর রহমান (Dr. Mostafizur Rahman)',
-    specialty: 'General Medicine (মেডিসিন বিশেষজ্ঞ)',
+    name: 'Dr. Mostafizur Rahman',
+    specialty: 'General Medicine Specialist',
     experience: 18,
     rating: 4.7,
     reviewCount: 65,
@@ -132,18 +132,18 @@ export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     if (!doctor.workingDays.includes(dayOfWeek)) {
       const daysStr = doctor.workingDays
-        .map(d => ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'][d])
+        .map(d => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d])
         .join(', ');
       return {
         success: false,
-        message: `এই ডাক্তার শুধুমাত্র [${daysStr}]-এ রোগী দেখেন। আপনার নির্বাচিত দিনটি ডাক্তারের শিডিউলের সাথে মিলছে না।`
+        message: `This doctor only visits on [${daysStr}]. Your selected date does not match the doctor's weekly schedule.`
       };
     }
 
     if (doctor.holidays.includes(data.date)) {
       return {
         success: false,
-        message: `নির্বাচনকৃত তারিখ (${data.date}) ডাক্তারের জন্য ছুটির দিন (Holiday)। দয়া করে অন্য দিন বেছে নিন।`
+        message: `The selected date (${data.date}) is a public or personal holiday for this doctor. Please choose another date.`
       };
     }
 
@@ -153,7 +153,7 @@ export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (alreadyBooked) {
       return {
         success: false,
-        message: 'দুঃখিত, এই সময়ের স্লটটি ইতিমধ্যেই বুক হয়ে গিয়েছে। অনুগ্রহ করে অন্য স্লট নির্বাচন করুন।'
+        message: 'Sorry, this time slot has already been booked. Please select another slot.'
       };
     }
 
@@ -184,7 +184,7 @@ export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return {
       success: true,
       appointment: newAppointment,
-      message: 'আপনার অ্যাপয়েন্টমেন্ট বুকিং সফল হয়েছে!'
+      message: 'Your appointment booking has been placed successfully!'
     };
   };
 

@@ -30,18 +30,18 @@ export const DoctorDirectory: React.FC = () => {
     if (!selectedDoctorId) return;
 
     if (!commentVal.trim()) {
-      alert('অনুগ্রহ করে আপনার মন্তব্য লিখুন।');
+      alert('Please fill in your feedback/comment.');
       return;
     }
 
     addDoctorReview(selectedDoctorId, {
-      patientName: isAnonymous ? 'Anonymous' : (reviewerName || 'আরিফ আহমেদ (Arif Ahmed)'),
+      patientName: isAnonymous ? 'Anonymous' : (reviewerName || 'Arif Ahmed'),
       rating: ratingVal,
       comment: commentVal,
       anonymous: isAnonymous
     });
 
-    setSuccessMsg('আপনার রিভিউটি সফলভাবে গৃহীত হয়েছে!');
+    setSuccessMsg('Your review has been successfully submitted!');
     setReviewerName('');
     setCommentVal('');
     setRatingVal(5);
@@ -52,21 +52,21 @@ export const DoctorDirectory: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-slate-50 p-4 font-bengali pb-20">
+    <div className="max-w-md mx-auto min-h-screen bg-slate-50 p-4 font-sans pb-20">
 
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-slate-800">ডাক্তার ডিরেক্টরি (Doctor List)</h2>
-        <p className="text-xs text-slate-500 mt-0.5">অভিজ্ঞ ডাক্তার খুঁজে রিভিউ ও শিডিউল চেক করুন</p>
+        <h2 className="text-xl font-bold text-slate-800">Doctor Directory</h2>
+        <p className="text-xs text-slate-500 mt-0.5">Find experienced physicians, check rosters, and submit patient reviews</p>
       </div>
 
       <div className="relative flex items-center mb-4">
         <Search className="absolute left-3.5 text-slate-400 w-5 h-5 pointer-events-none" />
         <input
           type="text"
-          placeholder="ডাক্তারের নাম বা স্পেশালিটি খুঁজুন..."
+          placeholder="Search doctor name or specialty..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm font-bengali shadow-xs"
+          className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-sm shadow-sm"
         />
       </div>
 
@@ -81,7 +81,7 @@ export const DoctorDirectory: React.FC = () => {
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
-            {spec === 'All' ? 'সব বিভাগ' : spec}
+            {spec === 'All' ? 'All Specialties' : spec}
           </button>
         ))}
       </div>
@@ -95,7 +95,7 @@ export const DoctorDirectory: React.FC = () => {
             <img
               src={doc.imageUrl || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=200'}
               alt={doc.name}
-              className="w-16 h-16 rounded-xl object-cover border border-slate-100 bg-slate-100 font-sans"
+              className="w-16 h-16 rounded-xl object-cover border border-slate-100 bg-slate-100"
             />
             <div className="flex-1 min-w-0">
               <h3 className="text-xs font-bold text-slate-800 leading-tight truncate">{doc.name}</h3>
@@ -106,13 +106,13 @@ export const DoctorDirectory: React.FC = () => {
                   <Star className="w-3 h-3 fill-amber-500 animate-pulse" />
                   <span className="font-bold ml-0.5">{doc.rating}</span>
                 </div>
-                <span className="text-slate-400">({doc.reviewCount} রিভিউ)</span>
+                <span className="text-slate-400">({doc.reviewCount} Reviews)</span>
                 <span className="text-slate-300">|</span>
-                <span className="text-slate-500">অভিজ্ঞতা: {doc.experience} বছর</span>
+                <span className="text-slate-500">Exp: {doc.experience} Yrs</span>
               </div>
 
               <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-slate-50">
-                <span className="text-xs font-bold text-slate-700">ফি: ৳ {doc.fees}</span>
+                <span className="text-xs font-bold text-slate-700">Fees: BDT {doc.fees}</span>
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => {
@@ -121,13 +121,13 @@ export const DoctorDirectory: React.FC = () => {
                     }}
                     className="px-2.5 py-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all cursor-pointer"
                   >
-                    রিভিউ দেখুন
+                    View Reviews
                   </button>
                   <a
                     href={`/patient/booking?doctorId=${doc.id}`}
                     className="px-2.5 py-1 text-[10px] font-bold bg-primary hover:bg-blue-700 text-white rounded-lg shadow-sm transition-all"
                   >
-                    বুক করুন
+                    Book
                   </a>
                 </div>
               </div>
@@ -142,7 +142,7 @@ export const DoctorDirectory: React.FC = () => {
 
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-xs font-bold text-slate-500 uppercase">ডক্টর রেটিং ও রিভিউ</h3>
+                <h3 className="text-xs font-bold text-slate-500 uppercase">Doctor Ratings & Reviews</h3>
                 <h4 className="text-sm font-bold text-slate-800 mt-1">{selectedDoctor.name}</h4>
               </div>
               <button
@@ -159,25 +159,25 @@ export const DoctorDirectory: React.FC = () => {
                 <div className="flex justify-center text-amber-500 my-0.5">
                   <Star className="w-4 h-4 fill-amber-500" />
                 </div>
-                <div className="text-[10px] text-slate-400">গড় রেটিং ({selectedDoctor.reviewCount} জন)</div>
+                <div className="text-[10px] text-slate-400">Avg Rating ({selectedDoctor.reviewCount} users)</div>
               </div>
               <div className="w-px h-12 bg-slate-200" />
               <div className="flex-1 px-4 text-xs space-y-1 text-slate-500">
-                <div>৫ তারকা: {selectedDoctor.reviews.filter(r=>r.rating===5).length} জন</div>
-                <div>৪ তারকা: {selectedDoctor.reviews.filter(r=>r.rating===4).length} জন</div>
+                <div>5 Star: {selectedDoctor.reviews.filter(r=>r.rating===5).length} Patient(s)</div>
+                <div>4 Star: {selectedDoctor.reviews.filter(r=>r.rating===4).length} Patient(s)</div>
               </div>
             </div>
 
             <div className="space-y-3.5 max-h-[220px] overflow-y-auto pr-1">
-              <h5 className="text-xs font-bold text-slate-600">রোগীদের মন্তব্য ({selectedDoctor.reviews.length})</h5>
+              <h5 className="text-xs font-bold text-slate-600">Patient Feedbacks ({selectedDoctor.reviews.length})</h5>
               {selectedDoctor.reviews.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-4">বর্তমানে কোনো মন্তব্য নেই। প্রথম রিভিউ দিন!</p>
+                <p className="text-xs text-slate-400 text-center py-4">No reviews yet. Be the first to review!</p>
               ) : (
                 selectedDoctor.reviews.map(rev => (
                   <div key={rev.id} className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                     <div className="flex justify-between items-center mb-1">
                       <span className="text-xs font-bold text-slate-700">
-                        {rev.anonymous ? 'বেনামী রোগী' : rev.patientName}
+                        {rev.anonymous ? 'Anonymous Patient' : rev.patientName}
                       </span>
                       <div className="flex items-center text-amber-500 text-xs">
                         <Star className="w-3.5 h-3.5 fill-amber-500" />
@@ -194,7 +194,7 @@ export const DoctorDirectory: React.FC = () => {
             <form onSubmit={handleReviewSubmit} className="border-t border-slate-100 pt-4 space-y-3">
               <h5 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                 <MessageSquare className="w-4 h-4 text-primary" />
-                আপনার রিভিউ দিন
+                Submit Your Feedback
               </h5>
 
               {successMsg && (
@@ -205,44 +205,44 @@ export const DoctorDirectory: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-500 block mb-1">আপনার নাম (ঐচ্ছিক)</label>
+                  <label className="text-[10px] font-bold text-slate-500 block mb-1">Your Name (Optional)</label>
                   <input
                     type="text"
                     value={reviewerName}
                     onChange={(e) => setReviewerName(e.target.value)}
-                    placeholder="যেমন: আরিফ আহমেদ"
-                    className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary font-bengali bg-white"
+                    placeholder="e.g., Arif Ahmed"
+                    className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary bg-white"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-500 block mb-1">স্টার রেটিং দিন</label>
+                  <label className="text-[10px] font-bold text-slate-500 block mb-1">Star Rating</label>
                   <select
                     value={ratingVal}
                     onChange={(e) => setRatingVal(Number(e.target.value))}
-                    className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary font-bengali"
+                    className="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
                   >
-                    <option value={5}>⭐⭐⭐⭐⭐ (৫/৫)</option>
-                    <option value={4}>⭐⭐⭐⭐ (৪/৫)</option>
-                    <option value={3}>⭐⭐⭐ (৩/৫)</option>
-                    <option value={2}>⭐⭐ (২/৫)</option>
-                    <option value={1}>⭐ (১/৫)</option>
+                    <option value={5}>⭐⭐⭐⭐⭐ (5/5)</option>
+                    <option value={4}>⭐⭐⭐⭐ (4/5)</option>
+                    <option value={3}>⭐⭐⭐ (3/5)</option>
+                    <option value={2}>⭐⭐ (2/5)</option>
+                    <option value={1}>⭐ (1/5)</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-500 block mb-1">মন্তব্য (Comment)</label>
+                <label className="text-[10px] font-bold text-slate-500 block mb-1">Comments</label>
                 <textarea
                   value={commentVal}
                   onChange={(e) => setCommentVal(e.target.value)}
-                  placeholder="ডাক্তারের পরামর্শ ও সেবা কেমন লাগলো লিখুন..."
+                  placeholder="Share details about doctor's consulting style..."
                   rows={2}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary font-bengali bg-white"
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary bg-white"
                 />
               </div>
 
               <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200/60">
-                <span className="text-[11px] font-bold text-slate-600">বেনামে রিভিউ দিতে চান? (Anonymous)</span>
+                <span className="text-[11px] font-bold text-slate-600">Review Anonymously?</span>
                 <button
                   type="button"
                   onClick={() => setIsAnonymous(!isAnonymous)}
@@ -262,7 +262,7 @@ export const DoctorDirectory: React.FC = () => {
                 type="submit"
                 className="w-full py-2 bg-primary hover:bg-blue-700 text-white rounded-lg font-bold text-xs shadow-sm cursor-pointer"
               >
-                সাবমিট রিভিউ (Submit Review)
+                Submit Review
               </button>
             </form>
           </div>

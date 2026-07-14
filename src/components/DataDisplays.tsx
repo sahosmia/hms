@@ -39,7 +39,7 @@ export function Table<T>({
                 <th
                   key={idx}
                   onClick={() => header.sortable && onSort && header.key && onSort(header.key as keyof T)}
-                  className={`px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider font-bengali ${
+                  className={`px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider ${
                     header.sortable ? 'cursor-pointer select-none hover:text-slate-800 transition-colors' : ''
                   }`}
                 >
@@ -58,8 +58,8 @@ export function Table<T>({
           <tbody className="divide-y divide-slate-100 bg-white">
             {data.length === 0 ? (
               <tr>
-                <td colSpan={headers.length} className="px-6 py-10 text-center text-sm text-slate-400 font-bengali">
-                  কোনো তথ্য পাওয়া যায়নি
+                <td colSpan={headers.length} className="px-6 py-10 text-center text-sm text-slate-400">
+                  No records found.
                 </td>
               </tr>
             ) : (
@@ -70,7 +70,7 @@ export function Table<T>({
       </div>
 
       {pagination && pagination.totalPages > 1 && (
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between font-bengali">
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
           <span className="text-xs text-slate-500">
             Page {pagination.currentPage} of {pagination.totalPages}
           </span>
@@ -80,7 +80,7 @@ export function Table<T>({
               disabled={pagination.currentPage === 1}
               className="px-3 py-1 text-xs rounded border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              পূর্ববর্তী
+              Previous
             </button>
             {Array.from({ length: pagination.totalPages }).map((_, i) => (
               <button
@@ -100,7 +100,7 @@ export function Table<T>({
               disabled={pagination.currentPage === pagination.totalPages}
               className="px-3 py-1 text-xs rounded border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              পরবর্তী
+              Next
             </button>
           </div>
         </div>
@@ -124,7 +124,7 @@ export const Badge: React.FC<BadgeProps> = ({ status, children }) => {
   };
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border font-bengali transition-colors shadow-sm ${colorMap[status]}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-colors shadow-sm ${colorMap[status]}`}>
       {children}
     </span>
   );
@@ -144,7 +144,7 @@ interface TimelineProps {
 
 export const Timeline: React.FC<TimelineProps> = ({ steps }) => {
   return (
-    <div className="flow-root font-bengali">
+    <div className="flow-root">
       <ul className="-mb-8">
         {steps.map((step, idx) => (
           <li key={idx}>
@@ -212,7 +212,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
   return (
     <div className="flex flex-col flex-1 min-w-[280px] bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-sm">
       <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
-        <h3 className="text-sm font-bold text-slate-700 font-bengali flex items-center gap-1.5">
+        <h3 className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
           {title}
           {badgeCount !== undefined && (
             <Badge status={badgeColor}>{badgeCount}</Badge>

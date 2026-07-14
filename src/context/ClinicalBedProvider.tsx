@@ -102,7 +102,7 @@ export const ClinicalBedProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return {
       success: true,
-      message: `রোগীকে সফলভাবে ${bed.name}-এ ভর্তি করা হয়েছে।`,
+      message: `Patient admitted successfully to ${bed.name}.`,
       admission: newAdmission
     };
   };
@@ -126,7 +126,7 @@ export const ClinicalBedProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return {
       success: true,
-      message: 'রোগীকে সফলভাবে রিলিজ/ডিসচার্জ করা হয়েছে এবং বেডটি খালি করা হয়েছে।'
+      message: 'Patient has been discharged and the bed is now available.'
     };
   };
 

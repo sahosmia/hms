@@ -24,24 +24,24 @@ export const AppointmentStepper: React.FC = () => {
   const doctorOptions = doctors.map(d => ({
     value: d.id,
     label: d.name,
-    sublabel: `${d.specialty} | ফি: ৳${d.fees}`
+    sublabel: `${d.specialty} | Fees: BDT ${d.fees}`
   }));
 
   const handleNextStep = () => {
     setError('');
     if (step === 1) {
       if (!selectedDocId) {
-        setError('অনুগ্রহ করে একজন ডাক্তার নির্বাচন করুন।');
+        setError('Please select a doctor.');
         return;
       }
       setStep(2);
     } else if (step === 2) {
       if (!bookingDate) {
-        setError('অনুগ্রহ করে অ্যাপয়েন্টমেন্টের তারিখ নির্বাচন করুন।');
+        setError('Please select an appointment date.');
         return;
       }
       if (!selectedSlot) {
-        setError('অনুগ্রহ করে পছন্দসই স্লট নির্বাচন করুন।');
+        setError('Please select a time slot.');
         return;
       }
 
@@ -49,11 +49,11 @@ export const AppointmentStepper: React.FC = () => {
         const dateObj = new Date(bookingDate);
         const dayOfWeek = dateObj.getDay();
         if (!selectedDoctor.workingDays.includes(dayOfWeek)) {
-          setError(`নির্বাচনকৃত তারিখে এই ডাক্তার রোগী দেখেন না।`);
+          setError(`Selected doctor is not available on this day of the week.`);
           return;
         }
         if (selectedDoctor.holidays.includes(bookingDate)) {
-          setError('নির্বাচিত তারিখটি ডাক্তারের জন্য ছুটির দিন (Holiday)।');
+          setError('Selected date is a holiday for this doctor.');
           return;
         }
       }
@@ -65,12 +65,12 @@ export const AppointmentStepper: React.FC = () => {
   const handleBookingSubmit = () => {
     setError('');
     if (!symptoms.trim()) {
-      setError('অনুগ্রহ করে আপনার প্রধান লক্ষণ বা সমস্যাটি সংক্ষেপে লিখুন।');
+      setError('Please provide details on symptoms or reason of visit.');
       return;
     }
 
     if (!user) {
-      setError('বুকিং করার জন্য লগইন থাকা আবশ্যক।');
+      setError('You must be logged in to book an appointment.');
       return;
     }
 
@@ -92,19 +92,19 @@ export const AppointmentStepper: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-slate-50 p-4 font-bengali pb-20">
+    <div className="max-w-md mx-auto min-h-screen bg-slate-50 p-4 font-sans pb-20">
 
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-slate-800">অ্যাপয়েন্টমেন্ট বুকিং (Appointment Wizard)</h2>
-        <p className="text-xs text-slate-500 mt-0.5">সহজ ৪টি ধাপে অ্যাপয়েন্টমেন্ট বুক করুন</p>
+        <h2 className="text-xl font-bold text-slate-800">Appointment Stepper Flow</h2>
+        <p className="text-xs text-slate-500 mt-0.5">Book an appointment easily in 4 interactive steps</p>
       </div>
 
       <div className="grid grid-cols-4 gap-1.5 mb-5 text-center">
         {[
-          { num: 1, text: 'ডাক্তার' },
-          { num: 2, text: 'তারিখ ও স্লট' },
-          { num: 3, text: 'লক্ষণ' },
-          { num: 4, text: 'সম্পন্ন' }
+          { num: 1, text: 'Doctor' },
+          { num: 2, text: 'Date & Slot' },
+          { num: 3, text: 'Symptoms' },
+          { num: 4, text: 'Complete' }
         ].map((s) => (
           <div
             key={s.num}
@@ -116,7 +116,7 @@ export const AppointmentStepper: React.FC = () => {
                 : 'bg-white border-slate-200 text-slate-400'
             }`}
           >
-            <div className="font-sans text-[10px] uppercase opacity-85">ধাপ {s.num}</div>
+            <div className="font-sans text-[10px] uppercase opacity-85">Step {s.num}</div>
             <div className="mt-0.5">{s.text}</div>
           </div>
         ))}
@@ -126,14 +126,14 @@ export const AppointmentStepper: React.FC = () => {
 
         {step === 1 && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700">ধাপ ১: ডাক্তার নির্বাচন করুন</h3>
+            <h3 className="text-sm font-bold text-slate-700">Step 1: Choose Doctor</h3>
 
             <SearchableDropdown
-              label="ডাক্তার খুঁজুন"
+              label="Select Doctor"
               options={doctorOptions}
               value={selectedDocId}
               onChange={setSelectedDocId}
-              placeholder="ডাক্তারের নাম বা বিভাগ সার্চ করুন..."
+              placeholder="Search by physician name or department..."
               error={error}
             />
 
@@ -147,7 +147,7 @@ export const AppointmentStepper: React.FC = () => {
                 <div>
                   <h4 className="text-xs font-bold text-slate-800">{selectedDoctor.name}</h4>
                   <p className="text-[10px] text-primary font-bold mt-0.5">{selectedDoctor.specialty}</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">পরামর্শ ফি: ৳ {selectedDoctor.fees}</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Consultation Fee: BDT {selectedDoctor.fees}</p>
                 </div>
               </div>
             )}
@@ -156,17 +156,17 @@ export const AppointmentStepper: React.FC = () => {
               onClick={handleNextStep}
               className="w-full py-2.5 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer"
             >
-              পরবর্তী ধাপে যান
+              Proceed to Next Step
             </button>
           </div>
         )}
 
         {step === 2 && selectedDoctor && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700">ধাপ ২: তারিখ ও স্লট নির্ধারণ</h3>
+            <h3 className="text-sm font-bold text-slate-700">Step 2: Appointment Date & Slot</h3>
 
             <Input
-              label="অ্যাপয়েন্টমেন্টের তারিখ"
+              label="Select Booking Date"
               type="date"
               value={bookingDate}
               onChange={(e) => {
@@ -177,15 +177,15 @@ export const AppointmentStepper: React.FC = () => {
             />
 
             <div className="bg-blue-50 text-blue-800 text-[10px] p-2.5 rounded-lg border border-blue-100 space-y-1">
-              <span className="font-bold">ডাক্তার শিডিউল তথ্য:</span>
-              <p>১. সচল সাপ্তাহিক কার্যদিবস: {selectedDoctor.workingDays.map(d => ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহস্পতি', 'শুক্র', 'শনি'][d]).join(', ')}</p>
+              <span className="font-bold">Doctor Roster Information:</span>
+              <p>1. Working Days: {selectedDoctor.workingDays.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}</p>
               {selectedDoctor.holidays.length > 0 && (
-                <p>২. ছুটির দিনসমূহ (Holidays): {selectedDoctor.holidays.join(', ')}</p>
+                <p>2. Doctor Holidays: {selectedDoctor.holidays.join(', ')}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700">উপলব্ধ সময় স্লট (Available Slots)</label>
+              <label className="text-xs font-bold text-slate-700">Available Time Slots</label>
               <div className="grid grid-cols-3 gap-2">
                 {selectedDoctor.availableSlots.map(slot => (
                   <button
@@ -209,13 +209,13 @@ export const AppointmentStepper: React.FC = () => {
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all cursor-pointer"
               >
-                পূর্ববর্তী
+                Back
               </button>
               <button
                 onClick={handleNextStep}
                 className="flex-1 py-2.5 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer"
               >
-                পরবর্তী
+                Next
               </button>
             </div>
           </div>
@@ -223,17 +223,17 @@ export const AppointmentStepper: React.FC = () => {
 
         {step === 3 && selectedDoctor && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700">ধাপ ৩: লক্ষণ ও সমস্যা বিবরণ</h3>
+            <h3 className="text-sm font-bold text-slate-700">Step 3: Symptoms Description</h3>
 
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-1">
-              <div><b>ডাক্তার:</b> {selectedDoctor.name}</div>
-              <div><b>তারিখ:</b> {bookingDate} ({selectedSlot})</div>
-              <div><b>পরামর্শ ফি:</b> ৳ {selectedDoctor.fees}</div>
+              <div><b>Physician:</b> {selectedDoctor.name}</div>
+              <div><b>Date & Time:</b> {bookingDate} ({selectedSlot})</div>
+              <div><b>Consultation Fee:</b> BDT {selectedDoctor.fees}</div>
             </div>
 
             <Textarea
-              label="আপনার শারীরিক সমস্যা / লক্ষণসমূহ"
-              placeholder="সংক্ষেপে লক্ষণগুলো লিখুন (যেমন: ৩ দিন ধরে জ্বর, বুকব্যথা ইত্যাদি)..."
+              label="Describe Your Symptoms / Medical Reason"
+              placeholder="Describe briefly (e.g., Fever for 3 days, dry cough, abdominal pain)..."
               value={symptoms}
               onChange={(e) => setSymptoms(e.target.value)}
               rows={3}
@@ -245,13 +245,13 @@ export const AppointmentStepper: React.FC = () => {
                 onClick={() => setStep(2)}
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all cursor-pointer"
               >
-                পূর্ববর্তী
+                Back
               </button>
               <button
                 onClick={handleBookingSubmit}
                 className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer"
               >
-                বুকিং সম্পন্ন করুন
+                Confirm Appointment
               </button>
             </div>
           </div>
@@ -259,35 +259,35 @@ export const AppointmentStepper: React.FC = () => {
 
         {step === 4 && success && (
           <div className="text-center py-4 space-y-4">
-            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner font-sans font-bold text-lg">
               ✓
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-slate-800">বুকিং সফলভাবে সম্পন্ন হয়েছে!</h3>
-              <p className="text-xs text-slate-500 mt-1">আপনার সিরিয়াল ও বিবরণ নিচে তুলে ধরা হলো</p>
+              <h3 className="text-lg font-bold text-slate-800">Booking Confirmed Successfully!</h3>
+              <p className="text-xs text-slate-500 mt-1">Your appointment details are provided below</p>
             </div>
 
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto font-sans">
               <div className="flex justify-between">
-                <span className="text-slate-500">সিরিয়াল নম্বর:</span>
+                <span className="text-slate-500">Serial Number:</span>
                 <span className="font-bold text-primary font-mono">{success.serialNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-bengali">রোগীর নাম:</span>
-                <span className="font-bold text-slate-700 font-bengali">{success.patientName}</span>
+                <span className="text-slate-500">Patient Name:</span>
+                <span className="font-bold text-slate-700">{success.patientName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-bengali">ডাক্তার:</span>
-                <span className="font-bold text-slate-700 font-bengali">{success.doctorName}</span>
+                <span className="text-slate-500">Doctor Name:</span>
+                <span className="font-bold text-slate-700">{success.doctorName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-bengali">তারিখ ও সময়:</span>
-                <span className="font-bold text-slate-700 font-bengali">{success.date} ({success.timeSlot})</span>
+                <span className="text-slate-500">Date & Slot:</span>
+                <span className="font-bold text-slate-700">{success.date} ({success.timeSlot})</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-bengali">ফি (পরামর্শ):</span>
-                <span className="font-bold text-slate-700 font-bengali">৳ {selectedDoctor?.fees}</span>
+                <span className="text-slate-500">Fees Paid:</span>
+                <span className="font-bold text-slate-700">BDT {selectedDoctor?.fees}</span>
               </div>
             </div>
 
@@ -296,7 +296,7 @@ export const AppointmentStepper: React.FC = () => {
                 href="/patient/history"
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all text-center"
               >
-                বুকিং তালিকা দেখুন
+                Go to History List
               </a>
               <button
                 onClick={() => {
@@ -309,7 +309,7 @@ export const AppointmentStepper: React.FC = () => {
                 }}
                 className="flex-1 py-2.5 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer"
               >
-                নতুন বুকিং করুন
+                Book Another Appointment
               </button>
             </div>
           </div>

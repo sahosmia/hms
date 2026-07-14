@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { PatientOtpLogin } from '../features/auth/PatientOtpLogin';
 import { AdminLogin } from '../features/auth/AdminLogin';
 import { PatientDashboard } from '../features/patient/PatientDashboard';
-import { DoctorDirectory } from '../features/doctor/DoctorDirectory';
 import { AppointmentStepper } from '../features/doctor/AppointmentStepper';
 import { BookingHistory } from '../features/patient/BookingHistory';
 import { NurseFeed } from '../features/clinical/NurseFeed';
@@ -13,12 +12,22 @@ import { BedDashboard } from '../features/clinical/BedDashboard';
 import { AdminDashboard } from '../features/admin/AdminDashboard';
 import { SurgeryScheduler } from '../features/ot/SurgeryScheduler';
 
-import { HeartPulse, LayoutDashboard, User, Stethoscope, History, Calendar, Bed, ClipboardList, ShieldAlert, LogOut } from 'lucide-react';
+import { Home } from '../features/public/Home';
+import { About } from '../features/public/About';
+import { PublicDoctors } from '../features/public/PublicDoctors';
+import { Contact } from '../features/public/Contact';
+
+import { PublicNavbar } from '../components/PublicNavbar';
+
+import { HeartPulse, LayoutDashboard, Stethoscope, History, Calendar, Bed, ClipboardList, LogOut } from 'lucide-react';
 
 const PatientGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
+  const location = useLocation();
+
   if (!user || user.role !== 'patient') {
-    return <Navigate to="/patient/login" replace />;
+    // Save where they wanted to go
+    return <Navigate to={`/patient/login?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
   return <>{children}</>;
 };
@@ -31,42 +40,20 @@ const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <>{children}</>;
 };
 
-const PortalHome: React.FC = () => {
+const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 font-bengali">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-8 text-center space-y-6">
-
-        <div className="w-16 h-16 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mx-auto shadow-inner">
-          <HeartPulse className="w-10 h-10 text-primary animate-pulse" />
+    <div className="flex flex-col min-h-screen">
+      <PublicNavbar />
+      <main className="flex-grow pb-16">
+        {children}
+      </main>
+      <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-center text-xs font-sans">
+        <div className="max-w-6xl mx-auto px-6 space-y-2">
+          <p className="text-white font-bold">HMS Hospital Management System</p>
+          <p>Providing premium healthcare services, clinical roster scheduling, live bed grid state trackers, and invoice checkout portals.</p>
+          <p className="text-slate-500 pt-2">&copy; 2026 HMS Healthcare Inc. All rights reserved.</p>
         </div>
-
-        <div>
-          <h1 className="text-2xl font-black text-slate-800 leading-tight">হাসপাতাল ব্যবস্থাপনা পোর্টাল</h1>
-          <p className="text-xs text-slate-500 mt-1.5">Hospital Management System (HMS) Portal Selector</p>
-        </div>
-
-        <div className="space-y-3 pt-4">
-          <Link
-            to="/patient/login"
-            className="w-full py-3.5 bg-primary hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <User className="w-4 h-4" />
-            পেশেন্ট পোর্টাল (Patient Portal)
-          </Link>
-
-          <Link
-            to="/admin/login"
-            className="w-full py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <ShieldAlert className="w-4 h-4" />
-            অ্যাডমিন ও নার্স লগইন (Staff Login)
-          </Link>
-        </div>
-
-        <div className="text-[10px] text-slate-400 font-sans pt-2">
-          &copy; 2026 HMS Tech Architecture.
-        </div>
-      </div>
+      </footer>
     </div>
   );
 };
@@ -82,24 +69,24 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   const navItems = [
-    { label: 'ড্যাশবোর্ড ওভারভিউ', path: '/admin/dashboard', icon: <LayoutDashboard className="w-4.5 h-4.5" />, roles: ['admin'] },
-    { label: 'মেডিকেশন ও ভাইটাল ফিড', path: '/admin/nurse', icon: <ClipboardList className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
-    { label: 'বেড অকুপেন্সি গ্রিড', path: '/admin/beds', icon: <Bed className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
-    { label: 'সার্জারি ও ইনভেন্টরি', path: '/admin/surgery', icon: <Stethoscope className="w-4.5 h-4.5" />, roles: ['admin'] },
+    { label: 'Dashboard Overview', path: '/admin/dashboard', icon: <LayoutDashboard className="w-4.5 h-4.5" />, roles: ['admin'] },
+    { label: 'Medication & Vitals Feed', path: '/admin/nurse', icon: <ClipboardList className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
+    { label: 'Bed Occupancy Grid', path: '/admin/beds', icon: <Bed className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
+    { label: 'OT Surgery & Inventory', path: '/admin/surgery', icon: <Stethoscope className="w-4.5 h-4.5" />, roles: ['admin'] },
   ];
 
   const currentRole = user?.role || 'staff';
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-bengali">
+    <div className="min-h-screen bg-slate-50 flex font-sans">
       <aside className="w-64 bg-slate-900 text-slate-300 border-r border-slate-800 hidden md:flex flex-col justify-between shrink-0 font-sans">
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-800 pb-4">
             <HeartPulse className="w-6 h-6 text-primary" />
-            <span className="font-bold text-white text-base tracking-wider font-sans">HMS Administrator</span>
+            <span className="font-bold text-white text-base tracking-wider">HMS Administrator</span>
           </div>
 
-          <div className="space-y-1 font-bengali">
+          <div className="space-y-1">
             {navItems
               .filter(item => item.roles.includes(currentRole))
               .map(item => {
@@ -122,17 +109,17 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-800 space-y-3.5 bg-slate-950/40 font-bengali">
+        <div className="p-6 border-t border-slate-800 space-y-3.5 bg-slate-950/40">
           <div>
             <div className="text-xs font-bold text-white">{user?.name}</div>
-            <div className="text-[10px] text-slate-400 capitalize mt-0.5">রোল: {user?.role}</div>
+            <div className="text-[10px] text-slate-400 capitalize mt-0.5">Role: {user?.role}</div>
           </div>
           <button
             onClick={handleLogout}
             className="w-full py-2 bg-slate-800 hover:bg-rose-900/65 hover:text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-            লগআউট করুন
+            Log Out
           </button>
         </div>
       </aside>
@@ -182,14 +169,14 @@ const PatientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   };
 
   const menuItems = [
-    { label: 'হোম', path: '/patient/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { label: 'ডক্টর', path: '/patient/doctors', icon: <Stethoscope className="w-5 h-5" /> },
-    { label: 'বুক করুন', path: '/patient/booking', icon: <Calendar className="w-5 h-5" /> },
-    { label: 'ইতিহাস', path: '/patient/history', icon: <History className="w-5 h-5" /> },
+    { label: 'Home', path: '/patient/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { label: 'Doctors', path: '/doctors', icon: <Stethoscope className="w-5 h-5" /> },
+    { label: 'Book Slot', path: '/patient/booking', icon: <Calendar className="w-5 h-5" /> },
+    { label: 'History', path: '/patient/history', icon: <History className="w-5 h-5" /> },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-bengali">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>
@@ -212,10 +199,10 @@ const PatientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         })}
         <button
           onClick={handleLogout}
-          className="flex-1 py-1.5 flex flex-col items-center justify-center text-rose-500 hover:text-rose-700 cursor-pointer"
+          className="flex-1 py-1.5 flex flex-col items-center justify-center text-rose-500 hover:text-rose-700 cursor-pointer font-sans"
         >
           <LogOut className="w-5 h-5" />
-          <span className="text-[9px] mt-0.5">লগআউট</span>
+          <span className="text-[9px] mt-0.5">Log Out</span>
         </button>
       </nav>
     </div>
@@ -225,26 +212,22 @@ const PatientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<PortalHome />} />
+      {/* Public Pages Layout */}
+      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+      <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+      <Route path="/doctors" element={<PublicLayout><PublicDoctors /></PublicLayout>} />
+      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
 
+      {/* Patient Auth (Public page) */}
       <Route path="/patient/login" element={<PatientOtpLogin />} />
 
+      {/* Patient Protected Portal Pages */}
       <Route
         path="/patient/dashboard"
         element={
           <PatientGuard>
             <PatientLayout>
               <PatientDashboard />
-            </PatientLayout>
-          </PatientGuard>
-        }
-      />
-      <Route
-        path="/patient/doctors"
-        element={
-          <PatientGuard>
-            <PatientLayout>
-              <DoctorDirectory />
             </PatientLayout>
           </PatientGuard>
         }
@@ -270,6 +253,7 @@ export const AppRoutes: React.FC = () => {
         }
       />
 
+      {/* Admin Auth & Dashboard */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
       <Route

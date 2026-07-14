@@ -17,7 +17,7 @@ export const AdminLogin: React.FC = () => {
     setError('');
 
     if (!email || !password) {
-      setError('ইমেইল এবং পাসওয়ার্ড দুটিই পূরণ করুন');
+      setError('Please fill in both email and password.');
       return;
     }
 
@@ -28,13 +28,13 @@ export const AdminLogin: React.FC = () => {
       if (success) {
         navigate('/admin/dashboard');
       } else {
-        setError('ভুল ইমেইল অথবা পাসওয়ার্ড। ডেমো এক্সেস: admin@hms.com / admin123 অথবা nurse@hms.com / nurse123');
+        setError('Incorrect email or password. Demo access: admin@hms.com / admin123 or nurse@hms.com / nurse123');
       }
     }, 600);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center font-bengali">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
       <div className="max-w-4xl w-full mx-4 bg-white rounded-3xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 min-h-[500px]">
 
         <div className="hidden md:flex flex-col justify-between bg-gradient-to-br from-blue-700 to-primary p-10 text-white relative">
@@ -48,16 +48,16 @@ export const AdminLogin: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-3xl font-extrabold leading-tight">হাসপাতাল পরিচালন ব্যবস্থা (Admin)</h2>
+            <h2 className="text-3xl font-extrabold leading-tight">Hospital Administration (Admin)</h2>
             <p className="text-blue-100 text-sm leading-relaxed">
-              ডাক্তারদের সময়সূচী নির্ধারণ, ওয়ার্ডে বেড বণ্টন, জরুরি সার্জারি সিডিউল এবং লাইভ ফাইন্যান্সিয়াল ইনভয়েস ম্যানেজমেন্ট করতে লগইন করুন।
+              Login to schedule doctor rosters, manage ward bed allocations, check emergency surgeries, and track live financial invoice trends.
             </p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-xs space-y-1.5 border border-white/10">
             <span className="font-bold flex items-center gap-1">
               <HelpCircle className="w-4 h-4 text-blue-200" />
-              টেস্ট ক্রেডেনশিয়াল (Demo Accounts):
+              Demo Credentials Accounts:
             </span>
             <div className="font-sans flex flex-col gap-0.5 text-blue-100">
               <div><b>Admin Email:</b> admin@hms.com / <b>Pass:</b> admin123</div>
@@ -69,13 +69,13 @@ export const AdminLogin: React.FC = () => {
         <div className="p-8 md:p-12 flex flex-col justify-between">
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-slate-800">অ্যাডমিন লগইন (Staff Login)</h2>
-              <p className="text-xs text-slate-500 mt-1">আপনার নিবন্ধিত ইমেইল ও পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
+              <h2 className="text-2xl font-bold text-slate-800">Admin Login (Staff Login)</h2>
+              <p className="text-xs text-slate-500 mt-1">Access using your registered staff email and password</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <Input
-                label="ইমেইল অ্যাড্রেস"
+                label="Email Address"
                 type="email"
                 placeholder="admin@hms.com"
                 value={email}
@@ -85,7 +85,7 @@ export const AdminLogin: React.FC = () => {
               />
 
               <Input
-                label="পাসওয়ার্ড"
+                label="Password"
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -105,7 +105,7 @@ export const AdminLogin: React.FC = () => {
                 disabled={loading}
                 className="w-full py-3 bg-primary hover:bg-blue-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg active:scale-95 disabled:bg-blue-300 transition-all cursor-pointer text-sm"
               >
-                {loading ? 'লগইন করা হচ্ছে...' : 'লগইন করুন (Sign In)'}
+                {loading ? 'Logging In...' : 'Sign In'}
               </button>
             </form>
           </div>
@@ -113,7 +113,7 @@ export const AdminLogin: React.FC = () => {
           <div className="mt-8 text-center md:hidden bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs space-y-1.5 text-slate-600">
             <span className="font-bold flex items-center justify-center gap-1 text-slate-700">
               <HelpCircle className="w-4 h-4 text-slate-500" />
-              টেস্ট লগইন এক্সেস:
+              Demo Accounts:
             </span>
             <div className="font-sans flex flex-col gap-0.5 text-[11px] text-slate-500">
               <div>admin@hms.com / admin123</div>
@@ -122,7 +122,7 @@ export const AdminLogin: React.FC = () => {
           </div>
 
           <div className="text-center text-[10px] text-slate-400 mt-6 font-sans">
-            নিরাপদ নেটওয়ার্ক সংযোগ ছাড়া লগইন করা প্রতিহত করা হবে। <br />
+            Authentication requires secure network connection. <br />
             &copy; 2026 HMS Tech Inc.
           </div>
         </div>

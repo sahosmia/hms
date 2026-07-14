@@ -9,7 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input: React.FC<InputProps> = ({ label, error, icon, className = '', ...props }) => {
   return (
     <div className="flex flex-col gap-1 w-full">
-      <label className="text-sm font-medium text-slate-700 font-bengali">
+      <label className="text-sm font-medium text-slate-700">
         {label}
       </label>
       <div className="relative flex items-center">
@@ -19,14 +19,14 @@ export const Input: React.FC<InputProps> = ({ label, error, icon, className = ''
           </div>
         )}
         <input
-          className={`w-full font-bengali pl-${icon ? '10' : '3'} pr-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder-slate-400 bg-white hover:border-slate-300 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed ${
+          className={`w-full pl-${icon ? '10' : '3'} pr-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder-slate-400 bg-white hover:border-slate-300 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed ${
             error ? 'border-red-400 focus:ring-red-300 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''
           } ${className}`}
           {...props}
         />
       </div>
       {error && (
-        <span className="text-xs text-red-500 font-bengali mt-0.5 animate-fadeIn">
+        <span className="text-xs text-red-500 mt-0.5 animate-fadeIn">
           {error}
         </span>
       )}
@@ -48,7 +48,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   options,
   value,
   onChange,
-  placeholder = 'সার্চ করুন...',
+  placeholder = 'Search...',
   error
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -74,7 +74,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
 
   return (
     <div className="flex flex-col gap-1 w-full relative" ref={containerRef}>
-      <label className="text-sm font-medium text-slate-700 font-bengali">
+      <label className="text-sm font-medium text-slate-700">
         {label}
       </label>
       <div
@@ -83,7 +83,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           error ? 'border-red-400 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''
         }`}
       >
-        <span className="text-slate-700 font-bengali text-sm">
+        <span className="text-slate-700 text-sm">
           {selectedOption ? selectedOption.label : <span className="text-slate-400">{placeholder}</span>}
         </span>
         <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,13 +98,13 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="সার্চ করুন..."
-              className="w-full px-3 py-1.5 text-xs rounded border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary font-bengali bg-white"
+              placeholder="Search..."
+              className="w-full px-3 py-1.5 text-xs rounded border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary bg-white"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
           {filtered.length === 0 ? (
-            <div className="p-4 text-center text-xs text-slate-400 font-bengali">কোনো তথ্য পাওয়া যায়নি</div>
+            <div className="p-4 text-center text-xs text-slate-400">No results found.</div>
           ) : (
             filtered.map((opt) => (
               <div
@@ -114,7 +114,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                   setIsOpen(false);
                   setSearch('');
                 }}
-                className={`px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-bengali transition-colors ${
+                className={`px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm transition-colors ${
                   opt.value === value ? 'bg-blue-50 text-primary font-semibold' : 'text-slate-700'
                 }`}
               >
@@ -125,7 +125,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           )}
         </div>
       )}
-      {error && <span className="text-xs text-red-500 font-bengali mt-0.5">{error}</span>}
+      {error && <span className="text-xs text-red-500 mt-0.5">{error}</span>}
     </div>
   );
 };
@@ -141,8 +141,8 @@ export const Toggle: React.FC<ToggleProps> = ({ label, checked, onChange, sublab
   return (
     <div className="flex items-center justify-between py-2 border-b border-slate-50">
       <div>
-        <label className="text-sm font-medium text-slate-700 font-bengali block">{label}</label>
-        {sublabel && <span className="text-xs text-slate-400 font-bengali">{sublabel}</span>}
+        <label className="text-sm font-medium text-slate-700 block">{label}</label>
+        {sublabel && <span className="text-xs text-slate-400">{sublabel}</span>}
       </div>
       <button
         type="button"
@@ -173,12 +173,12 @@ export const Textarea: React.FC<TextareaProps> = ({ label, error, className = ''
         {label}
       </label>
       <textarea
-        className={`w-full font-bengali px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder-slate-400 bg-white hover:border-slate-300 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed resize-none ${
+        className={`w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder-slate-400 bg-white hover:border-slate-300 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed resize-none ${
           error ? 'border-red-400 focus:ring-red-300 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''
         } ${className}`}
         {...props}
       />
-      {error && <span className="text-xs text-red-500 font-bengali mt-0.5">{error}</span>}
+      {error && <span className="text-xs text-red-500 mt-0.5">{error}</span>}
     </div>
   );
 };

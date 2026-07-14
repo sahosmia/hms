@@ -84,7 +84,7 @@ export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ c
         if (item.stock < cons.quantity) {
           return {
             success: false,
-            message: `দুঃখিত, স্টক সংকটের কারণে '${item.name}' সরবরাহ করা যাচ্ছে না। স্টক আছে: ${item.stock} টি, দরকার: ${cons.quantity} টি।`
+            message: `Sorry, insufficient stock for item "${item.name}". Current Stock: ${item.stock} unit(s), Required: ${cons.quantity} unit(s).`
           };
         }
         updatedInventory[invIdx] = {
@@ -125,7 +125,7 @@ export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     return {
       success: true,
-      message: 'সার্জারি সিডিউল এবং কন্সুম্যাবলের স্টক সফলভাবে আপডেট হয়েছে।',
+      message: 'Surgery has been scheduled and inventory stocks deducted successfully.',
       surgery: newSurgery
     };
   };

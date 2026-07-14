@@ -99,7 +99,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const newBill: Bill = {
           id: `bill-${Math.random().toString(36).substr(2, 9)}`,
           patientId,
-          patientName: 'আরিফ আহমেদ (Arif Ahmed)',
+          patientName: 'Arif Ahmed',
           admissionId: null,
           appointmentId: null,
           surgeryId: null,

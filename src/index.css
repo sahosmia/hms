@@ -2,11 +2,11 @@
 
 @theme {
   --color-primary: #2563EB;
-  --font-bengali: "Noto Sans Bengali", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 body {
-  font-family: var(--font-bengali);
+  font-family: var(--font-sans);
   background-color: #f8fafc;
   color: #1e293b;
 }

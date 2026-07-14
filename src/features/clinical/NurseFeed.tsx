@@ -24,11 +24,11 @@ export const NurseFeed: React.FC = () => {
   const handleSubmitLog = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAdmissionId) {
-      alert('রোগী নির্বাচন করুন।');
+      alert('Please select an active admitted patient.');
       return;
     }
     if (!medicineName || !dosage || !nurseName) {
-      alert('সব তথ্য সঠিকভাবে দিন।');
+      alert('Please fill in medicine, dosage, and nurse name.');
       return;
     }
 
@@ -47,7 +47,7 @@ export const NurseFeed: React.FC = () => {
 
     setMedicineName('');
     setDosage('');
-    alert('মেডিকেশন লগ এবং ভাইটাল সাইন সফলভাবে সংরক্ষণ করা হয়েছে!');
+    alert('Medication log and vital signs recorded successfully!');
   };
 
   const filteredLogs = medicationLogs.filter(log =>
@@ -56,31 +56,31 @@ export const NurseFeed: React.FC = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 font-bengali space-y-6">
+    <div className="max-w-6xl mx-auto p-6 font-sans space-y-6">
 
       <div>
-        <h2 className="text-2xl font-black text-slate-800 font-bengali">নার্সিং এন্ড কেয়ার ফিড (Nurse Medication Management Feed)</h2>
-        <p className="text-xs text-slate-500 mt-0.5 font-bengali">ভর্তি রোগীদের ঔষধের সময়সূচী ও নিয়মিত ভাইটাল সাইন (BP, Temp, SpO2) রেকর্ডার</p>
+        <h2 className="text-2xl font-black text-slate-800">Nurse Medication Management Feed</h2>
+        <p className="text-xs text-slate-500 mt-0.5">Record patient medication details, schedule logs, and track real-time vital signs (BP, Temp, SpO2)</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-bengali">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <div className="lg:col-span-1 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm space-y-4">
           <h3 className="text-sm font-bold text-slate-700 flex items-center gap-1.5 border-b border-slate-100 pb-2">
             <Plus className="w-5 h-5 text-primary" />
-            নতুন লগ এবং ভাইটাল এন্ট্রি
+            New Medication & Vitals Entry
           </h3>
 
           <form onSubmit={handleSubmitLog} className="space-y-4">
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-slate-700">ভর্তি রোগী নির্বাচন করুন</label>
+              <label className="text-xs font-semibold text-slate-700">Select Admitted Patient</label>
               <select
                 value={selectedAdmissionId}
                 onChange={(e) => setSelectedAdmissionId(e.target.value)}
                 className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-primary focus:outline-none"
               >
-                <option value="">রোগী বেছে নিন...</option>
+                <option value="">Choose Patient...</option>
                 {activeAdmissions.map(adm => (
                   <option key={adm.id} value={adm.id}>
                     {adm.patientName} ({adm.bedName})
@@ -91,47 +91,47 @@ export const NurseFeed: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="ওষুধের নাম"
-                placeholder="যেমন: Napa Extend"
+                label="Medicine Name"
+                placeholder="e.g., Napa Extend"
                 value={medicineName}
                 onChange={(e) => setMedicineName(e.target.value)}
               />
               <Input
-                label="ডোজ (Dosage)"
-                placeholder="যেমন: 1+0+1"
+                label="Dosage"
+                placeholder="e.g., 1+0+1"
                 value={dosage}
                 onChange={(e) => setDosage(e.target.value)}
               />
             </div>
 
             <Input
-              label="অন-ডিউটি নার্সের নাম"
-              placeholder="যেমন: Nurse Rahman"
+              label="On-duty Nurse Name"
+              placeholder="e.g., Nurse Rahman"
               value={nurseName}
               onChange={(e) => setNurseName(e.target.value)}
             />
 
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-3 font-sans">
-              <span className="text-xs font-bold text-slate-700 flex items-center gap-1 font-bengali">
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
                 <HeartPulse className="w-4 h-4 text-rose-500" />
-                লাইভ ভাইটাল সাইন
+                Live Vital Signs
               </span>
               <div className="grid grid-cols-2 gap-3">
                 <Input
-                  label="রক্তচাপ (BP)"
+                  label="Blood Pressure (BP)"
                   placeholder="120/80"
                   value={bp}
                   onChange={(e) => setBp(e.target.value)}
                 />
                 <Input
-                  label="পালস রেট (BPM)"
+                  label="Pulse Rate (BPM)"
                   type="number"
                   placeholder="72"
                   value={pulse}
                   onChange={(e) => setPulse(Number(e.target.value))}
                 />
                 <Input
-                  label="তাপমাত্রা (°F)"
+                  label="Temperature (°F)"
                   type="number"
                   step="0.1"
                   placeholder="98.6"
@@ -139,7 +139,7 @@ export const NurseFeed: React.FC = () => {
                   onChange={(e) => setTemp(Number(e.target.value))}
                 />
                 <Input
-                  label="অক্সিজেন (SpO2 %)"
+                  label="Oxygen (SpO2 %)"
                   type="number"
                   placeholder="98"
                   value={spo2}
@@ -152,38 +152,38 @@ export const NurseFeed: React.FC = () => {
               type="submit"
               className="w-full py-2.5 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer"
             >
-              রেকর্ড করুন (Log Vitals)
+              Log Vitals & Medication
             </button>
           </form>
         </div>
 
         <div className="lg:col-span-2 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm flex flex-col h-[600px] font-sans">
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3 mb-4 font-bengali">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
               <Clipboard className="w-5 h-5 text-primary" />
-              লাইভ কেয়ার ও মেডিকেশন হিস্টোরি
+              Live Nursing Care & Medication History
             </h3>
 
             <input
               type="text"
-              placeholder="রোগী বা ওষুধের নাম সার্চ..."
+              placeholder="Search by patient or medicine name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary font-bengali sm:w-48 bg-white"
+              className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary sm:w-48"
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-1 space-y-4 font-bengali">
+          <div className="flex-1 overflow-y-auto pr-1 space-y-4">
             {filteredLogs.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">
-                কোনো মেডিকেশন লগ রেকর্ড পাওয়া যায়নি।
+                No active medication log records found.
               </div>
             ) : (
               filteredLogs.map(log => (
                 <div key={log.id} className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-200 transition-all font-sans">
 
-                  <div className="space-y-1.5 font-bengali">
+                  <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-xs text-slate-800">{log.patientName}</span>
                       <Badge status="blue">
@@ -192,15 +192,15 @@ export const NurseFeed: React.FC = () => {
                     </div>
 
                     <div className="text-xs text-slate-600">
-                      ওষুধ: <b className="text-primary">{log.medicineName}</b> | ডোজ: <b className="text-slate-800 font-sans">{log.dosage}</b>
+                      Medicine: <b className="text-primary">{log.medicineName}</b> | Dosage: <b className="text-slate-800 font-sans">{log.dosage}</b>
                     </div>
 
-                    <div className="flex items-center gap-3 text-[10px] text-slate-400">
+                    <div className="flex items-center gap-3 text-[10px] text-slate-400 font-sans">
                       <span className="flex items-center gap-0.5">
                         <Clock className="w-3.5 h-3.5" />
                         {log.timestamp}
                       </span>
-                      <span>নার্স: {log.nurseName}</span>
+                      <span>Assigned Nurse: {log.nurseName}</span>
                     </div>
                   </div>
 

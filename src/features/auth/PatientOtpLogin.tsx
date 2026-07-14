@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Input, OtpGrid } from '../../components/FormComponents';
 import { Smartphone, HelpCircle, ShieldAlert, HeartPulse } from 'lucide-react';
 
 export const PatientOtpLogin: React.FC = () => {
   const { sendOtp, verifyOtp, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/patient/dashboard';
+
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
@@ -18,7 +21,7 @@ export const PatientOtpLogin: React.FC = () => {
     e.preventDefault();
     setError('');
     if (!phone.match(/^(\+88)?01[3-9]\d{8}$/)) {
-      setError('সঠিক বাংলাদেশী মোবাইল নম্বর প্রদান করুন (যেমন: 01712345678)');
+      setError('Please enter a valid Bangladeshi mobile number (e.g. 01712345678)');
       return;
     }
 
@@ -28,7 +31,7 @@ export const PatientOtpLogin: React.FC = () => {
       setSimulatedOtp(res.otp);
       setStep('otp');
     } catch {
-      setError('ওটিপি পাঠাতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।');
+      setError('Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -38,7 +41,7 @@ export const PatientOtpLogin: React.FC = () => {
     e.preventDefault();
     setError('');
     if (otp.length < 4) {
-      setError('৪ ডিজিটের ওটিপি কোড সম্পূর্ণ করুন');
+      setError('Please enter the complete 4-digit OTP code');
       return;
     }
 
@@ -46,12 +49,12 @@ export const PatientOtpLogin: React.FC = () => {
     try {
       const success = await verifyOtp(phone, otp);
       if (success) {
-        navigate('/patient/dashboard');
+        navigate(redirectPath);
       } else {
-        setError('ভুল ওটিপি কোড। অনুগ্রহ করে সঠিক কোড দিন অথবা "1234" ব্যবহার করুন।');
+        setError('Incorrect OTP code. Please enter the correct code or use "1234" to bypass.');
       }
     } catch {
-      setError('যাচাইকরণ ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
+      setError('Verification failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -61,16 +64,16 @@ export const PatientOtpLogin: React.FC = () => {
     setLoading(true);
     try {
       await loginWithGoogle();
-      navigate('/patient/dashboard');
+      navigate(redirectPath);
     } catch {
-      setError('গুগল লগইন ব্যর্থ হয়েছে।');
+      setError('Google Login failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-8 font-bengali">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-8 font-sans">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative flex flex-col min-h-[600px] hover:shadow-2xl transition-all duration-300">
 
         <div className="bg-primary px-6 py-10 text-white text-center flex flex-col items-center gap-3 relative overflow-hidden">
@@ -79,8 +82,8 @@ export const PatientOtpLogin: React.FC = () => {
             <HeartPulse className="w-10 h-10 text-white animate-pulse" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-wide">হসপিটাল পোর্টাল (HMS)</h1>
-            <p className="text-blue-100 text-xs mt-1">সহজে বুকিং, রিপোর্ট ও ইনডোর সেবা ট্র্যাকিং</p>
+            <h1 className="text-2xl font-bold tracking-wide">Hospital Patient Portal</h1>
+            <p className="text-blue-100 text-xs mt-1">Book appointments, view medical profile, and clear bills instantly</p>
           </div>
         </div>
 
@@ -89,12 +92,12 @@ export const PatientOtpLogin: React.FC = () => {
             {step === 'phone' ? (
               <form onSubmit={handleSendOtp} className="space-y-5">
                 <div className="text-center mb-4">
-                  <h2 className="text-lg font-bold text-slate-800">পেশেন্ট ওটিপি লগইন (Patient Login)</h2>
-                  <p className="text-xs text-slate-500 mt-1">আপনার সচল মোবাইল নম্বর দিয়ে ওটিপি পাঠান</p>
+                  <h2 className="text-lg font-bold text-slate-800">Patient OTP Login</h2>
+                  <p className="text-xs text-slate-500 mt-1">Verify your active mobile number to proceed</p>
                 </div>
 
                 <Input
-                  label="মোবাইল নম্বর"
+                  label="Mobile Number"
                   placeholder="017XXXXXXXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -108,22 +111,22 @@ export const PatientOtpLogin: React.FC = () => {
                   disabled={loading}
                   className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-md hover:bg-blue-700 active:scale-95 disabled:bg-blue-300 transition-all cursor-pointer text-sm"
                 >
-                  {loading ? 'ওটিপি পাঠানো হচ্ছে...' : 'ওটিপি পাঠান (Send OTP)'}
+                  {loading ? 'Sending OTP...' : 'Send OTP'}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-5">
                 <div className="text-center mb-4">
-                  <h2 className="text-lg font-bold text-slate-800">ওটিপি যাচাই করুন (Verify OTP)</h2>
+                  <h2 className="text-lg font-bold text-slate-800">Verify OTP Code</h2>
                   <p className="text-xs text-slate-500 mt-1">
-                    <span className="font-semibold text-primary">{phone}</span> নম্বরে পাঠানো ৪ ডিজিটের কোডটি দিন
+                    Enter the 4-digit verification code sent to <span className="font-semibold text-primary">{phone}</span>
                   </p>
                 </div>
 
                 {simulatedOtp && (
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 text-center flex items-center justify-center gap-1.5 font-sans">
                     <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>সিমুলেটেড ওটিপি: <b>{simulatedOtp}</b> (অথবা টেস্ট ওটিপি <b>1234</b> দিন)</span>
+                    <span>Simulated OTP Code: <b>{simulatedOtp}</b> (or use test code <b>1234</b>)</span>
                   </div>
                 )}
 
@@ -141,14 +144,14 @@ export const PatientOtpLogin: React.FC = () => {
                     }}
                     className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all cursor-pointer"
                   >
-                    নম্বর পরিবর্তন
+                    Change Number
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
                     className="flex-1 py-3 bg-primary hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md active:scale-95 disabled:bg-blue-300 transition-all cursor-pointer"
                   >
-                    {loading ? 'যাচাই করা হচ্ছে...' : 'যাচাই করুন (Verify)'}
+                    {loading ? 'Verifying...' : 'Verify'}
                   </button>
                 </div>
               </form>
@@ -157,7 +160,7 @@ export const PatientOtpLogin: React.FC = () => {
             <div className="mt-6">
               <div className="relative flex py-2 items-center">
                 <div className="flex-grow border-t border-slate-100"></div>
-                <span className="flex-shrink mx-4 text-slate-400 text-xs font-medium uppercase font-sans">অথবা</span>
+                <span className="flex-shrink mx-4 text-slate-400 text-xs font-medium uppercase font-sans">or</span>
                 <div className="flex-grow border-t border-slate-100"></div>
               </div>
 
@@ -168,13 +171,13 @@ export const PatientOtpLogin: React.FC = () => {
                 className="w-full mt-2 py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-xl font-bold flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-sm text-xs cursor-pointer"
               >
                 <HelpCircle className="w-4 h-4 text-slate-500" />
-                গুগল দিয়ে লগইন করুন (Google Login)
+                Sign in with Google
               </button>
             </div>
           </div>
 
           <div className="text-center text-[10px] text-slate-400 mt-6 font-sans">
-            নিরাপদ যোগাযোগ নিশ্চিত করতে OTP সিস্টেম সচল রয়েছে। <br />
+            Your connection is encrypted. Mobile validation is mandated. <br />
             &copy; 2026 HMS. All rights reserved.
           </div>
         </div>

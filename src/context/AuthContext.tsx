@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const patientUser: User = {
         id: `usr-pat-${phone.replace(/\D/g, '') || 'default'}`,
-        name: 'আরিফ আহমেদ (Arif Ahmed)',
+        name: 'Arif Ahmed',
         phone: phone,
         role: 'patient',
         createdAt: new Date().toISOString(),
@@ -104,8 +104,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           dateOfBirth: '1990-05-15',
           gender: 'Male',
           allergies: ['Penicillin', 'Dust'],
-          medicalHistory: ['Asthma (হাঁপানি)', 'Hypertension (উচ্চ রক্তচাপ)'],
-          emergencyContactName: 'রহিমা বেগম (Rohima Begum)',
+          medicalHistory: ['Asthma', 'Hypertension'],
+          emergencyContactName: 'Rohima Begum',
           emergencyContactPhone: '+8801712345678',
           nid: '1990123456789',
           createdAt: new Date().toISOString(),
@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async (): Promise<void> => {
     const patientUser: User = {
       id: 'usr-pat-google',
-      name: 'সাকিব আল হাসান (Sakib Al Hasan)',
+      name: 'Sakib Al Hasan',
       email: 'sakib@gmail.com',
       role: 'patient',
       createdAt: new Date().toISOString(),
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       gender: 'Male',
       allergies: ['Peanuts'],
       medicalHistory: ['Mild Gastric Issues'],
-      emergencyContactName: 'মৌসুমী আহমেদ (Moushumi Ahmed)',
+      emergencyContactName: 'Moushumi Ahmed',
       emergencyContactPhone: '+8801811223344',
       nid: '1993888877776',
       createdAt: new Date().toISOString(),

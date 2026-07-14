@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { Surgery, InventoryItem, SupplyRequest, ConsumableItem } from '../types';
 
+import type { HospitalAsset } from '../types';
+
 interface OTInventoryContextType {
   surgeries: Surgery[];
   inventory: InventoryItem[];
   supplyRequests: SupplyRequest[];
+  assets: HospitalAsset[];
   scheduleSurgery: (data: {
     patientId: string;
     patientName: string;
@@ -20,6 +23,12 @@ interface OTInventoryContextType {
   updateSurgeryStatus: (id: string, status: Surgery['status']) => void;
   createSupplyRequest: (itemId: string, quantity: number, requestedBy: string) => void;
   updateSupplyRequestStatus: (id: string, status: SupplyRequest['status']) => void;
+  addAsset: (assetData: Omit<HospitalAsset, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateAsset: (id: string, assetData: Partial<Omit<HospitalAsset, 'id' | 'createdAt' | 'updatedAt'>>) => void;
+  deleteAsset: (id: string) => void;
+  addInventoryItem: (item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateInventoryItem: (id: string, item: Partial<Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>>) => void;
+  deleteInventoryItem: (id: string) => void;
 }
 
 const OTInventoryContext = createContext<OTInventoryContextType | undefined>(undefined);
@@ -32,6 +41,61 @@ const defaultInventory: InventoryItem[] = [
   { id: 'inv-5', name: 'N95 Face Mask (Particulate)', category: 'General', stock: 200, minStock: 50, text: 'N95', unitPrice: 150, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as any,
   { id: 'inv-6', name: 'Injection Ceftriaxone 1g', category: 'Medicines', stock: 90, minStock: 25, unitPrice: 220, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
   { id: 'inv-7', name: 'Lidocaine Injection 2%', category: 'Medicines', stock: 12, minStock: 15, unitPrice: 80, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+];
+
+const defaultAssets: HospitalAsset[] = [
+  {
+    id: 'ast-201',
+    name: 'GE Revolution CT Scanner',
+    serialNumber: 'SN-GE-99812-CT',
+    category: 'Medical Device',
+    department: 'Radiology & Imaging',
+    purchaseValue: 12000000,
+    purchaseDate: '2022-04-12',
+    condition: 'Excellent',
+    status: 'In Use',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'ast-202',
+    name: 'Mindray Ventilator SV300',
+    serialNumber: 'SN-MR-44123-VT',
+    category: 'Medical Device',
+    department: 'ICU & Critical Care',
+    purchaseValue: 850000,
+    purchaseDate: '2023-01-20',
+    condition: 'Good',
+    status: 'In Use',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'ast-203',
+    name: 'Dell PowerEdge Admin Server',
+    serialNumber: 'SN-DL-11002-SRV',
+    category: 'IT Equipment',
+    department: 'Information Technology',
+    purchaseValue: 350000,
+    purchaseDate: '2021-11-15',
+    condition: 'Good',
+    status: 'In Use',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'ast-204',
+    name: 'Philips ECG Pagewriter TC30',
+    serialNumber: 'SN-PL-55911-ECG',
+    category: 'Diagnostic Tool',
+    department: 'Outpatient Clinic',
+    purchaseValue: 500000,
+    purchaseDate: '2023-09-08',
+    condition: 'Needs Repair',
+    status: 'Under Maintenance',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
 ];
 
 export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -50,6 +114,11 @@ export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return stored ? JSON.parse(stored) : [];
   });
 
+  const [assets, setAssets] = useState<HospitalAsset[]>(() => {
+    const stored = localStorage.getItem('hms_assets');
+    return stored ? JSON.parse(stored) : defaultAssets;
+  });
+
   useEffect(() => {
     localStorage.setItem('hms_surgeries', JSON.stringify(surgeries));
   }, [surgeries]);
@@ -61,6 +130,10 @@ export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     localStorage.setItem('hms_supply_requests', JSON.stringify(supplyRequests));
   }, [supplyRequests]);
+
+  useEffect(() => {
+    localStorage.setItem('hms_assets', JSON.stringify(assets));
+  }, [assets]);
 
   const scheduleSurgery = (data: {
     patientId: string;
@@ -178,15 +251,62 @@ export const OTInventoryProvider: React.FC<{ children: React.ReactNode }> = ({ c
     );
   };
 
+  const addAsset = (assetData: Omit<HospitalAsset, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newAsset: HospitalAsset = {
+      ...assetData,
+      id: `ast-${Math.random().toString(36).substr(2, 9)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setAssets(prev => [newAsset, ...prev]);
+  };
+
+  const updateAsset = (id: string, assetData: Partial<Omit<HospitalAsset, 'id' | 'createdAt' | 'updatedAt'>>) => {
+    setAssets(prev =>
+      prev.map(ast => (ast.id === id ? { ...ast, ...assetData, updatedAt: new Date().toISOString() } : ast))
+    );
+  };
+
+  const deleteAsset = (id: string) => {
+    setAssets(prev => prev.filter(ast => ast.id !== id));
+  };
+
+  const addInventoryItem = (item: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newItem: InventoryItem = {
+      ...item,
+      id: `inv-${Math.random().toString(36).substr(2, 9)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setInventory(prev => [newItem, ...prev]);
+  };
+
+  const updateInventoryItem = (id: string, item: Partial<Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>>) => {
+    setInventory(prev =>
+      prev.map(i => (i.id === id ? { ...i, ...item, updatedAt: new Date().toISOString() } : i))
+    );
+  };
+
+  const deleteInventoryItem = (id: string) => {
+    setInventory(prev => prev.filter(i => i.id !== id));
+  };
+
   return (
     <OTInventoryContext.Provider value={{
       surgeries,
       inventory,
       supplyRequests,
+      assets,
       scheduleSurgery,
       updateSurgeryStatus,
       createSupplyRequest,
-      updateSupplyRequestStatus
+      updateSupplyRequestStatus,
+      addAsset,
+      updateAsset,
+      deleteAsset,
+      addInventoryItem,
+      updateInventoryItem,
+      deleteInventoryItem
     }}>
       {children}
     </OTInventoryContext.Provider>

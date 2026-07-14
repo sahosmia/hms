@@ -14,6 +14,9 @@ interface AppointmentContextType {
   }) => { success: boolean; appointment?: Appointment; message: string };
   updateAppointmentStatus: (id: string, status: Appointment['status']) => void;
   addDoctorReview: (doctorId: string, review: Omit<DoctorReview, 'id' | 'createdAt'>) => void;
+  addDoctor: (docData: Omit<Doctor, 'id' | 'rating' | 'reviewCount' | 'reviews'>) => void;
+  updateDoctorDetails: (id: string, docData: Partial<Omit<Doctor, 'id'>>) => void;
+  deleteDoctor: (id: string) => void;
 }
 
 const AppointmentContext = createContext<AppointmentContextType | undefined>(undefined);
@@ -220,13 +223,37 @@ export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     );
   };
 
+  const addDoctor = (docData: Omit<Doctor, 'id' | 'rating' | 'reviewCount' | 'reviews'>) => {
+    const newDoc: Doctor = {
+      ...docData,
+      id: `doc-${Math.random().toString(36).substr(2, 9)}`,
+      rating: 5.0,
+      reviewCount: 0,
+      reviews: []
+    };
+    setDoctors(prev => [...prev, newDoc]);
+  };
+
+  const updateDoctorDetails = (id: string, updatedFields: Partial<Omit<Doctor, 'id'>>) => {
+    setDoctors(prev =>
+      prev.map(doc => (doc.id === id ? { ...doc, ...updatedFields } : doc))
+    );
+  };
+
+  const deleteDoctor = (id: string) => {
+    setDoctors(prev => prev.filter(doc => doc.id !== id));
+  };
+
   return (
     <AppointmentContext.Provider value={{
       doctors,
       appointments,
       createAppointment,
       updateAppointmentStatus,
-      addDoctorReview
+      addDoctorReview,
+      addDoctor,
+      updateDoctorDetails,
+      deleteDoctor
     }}>
       {children}
     </AppointmentContext.Provider>

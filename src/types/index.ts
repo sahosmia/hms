@@ -8,6 +8,20 @@ export interface User {
   updatedAt: string;
 }
 
+export interface HospitalAsset {
+  id: string;
+  name: string;
+  serialNumber: string;
+  category: 'Medical Device' | 'IT Equipment' | 'Facility Infrastructure' | 'Diagnostic Tool';
+  department: string;
+  purchaseValue: number; // in BDT
+  purchaseDate: string; // YYYY-MM-DD
+  condition: 'Excellent' | 'Good' | 'Needs Repair' | 'Broken';
+  status: 'In Use' | 'Available' | 'Under Maintenance';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Profile {
   id: string;
   userId: string;
@@ -193,4 +207,16 @@ export interface MonthlyTrend {
   revenue: number;
   expenses: number;
   profit: number;
+}
+
+export interface Staff {
+  id: string;
+  name: string;
+  role: 'Nurse' | 'Doctor' | 'Administrator' | 'Receptionist' | 'Lab Technician' | 'Pharmacist';
+  department: string;
+  monthlySalary: number; // in BDT
+  status: 'Active' | 'On Leave' | 'Suspended';
+  joinedDate: string; // YYYY-MM-DD
+  createdAt: string;
+  updatedAt: string;
 }

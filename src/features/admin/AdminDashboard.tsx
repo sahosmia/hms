@@ -1,17 +1,24 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAppointments } from '../../context/AppointmentContext';
 import { useFinance } from '../../context/FinanceContext';
 import { useClinicalBeds } from '../../context/ClinicalBedProvider';
 import { useStaff } from '../../context/StaffContext';
 import { useOTInventory } from '../../context/OTInventoryContext';
 import { Badge } from '../../components/DataDisplays';
+import { EmployeeFinancePanel } from './EmployeeFinancePanel';
+import { ExpensePanel } from './ExpensePanel';
+import { DiagnosticPanel } from './DiagnosticPanel';
 import {
   TrendingUp, Users, DollarSign, CalendarRange, Settings,
   BellRing, PlusCircle, Trash2, Edit2, Eye, ClipboardList, ShieldAlert, Sparkles, X, Printer
 } from 'lucide-react';
 import type { Staff, Doctor, HospitalAsset } from '../../types';
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  initialTab?: 'analytics' | 'staff' | 'doctors' | 'assets' | 'reports' | 'diagnostics';
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'analytics' }) => {
   const { appointments, doctors, addDoctor, updateDoctorDetails, deleteDoctor } = useAppointments();
   const { beds, admissions } = useClinicalBeds();
   const { weeklyRevenue, departmentRevenue, bills, postDailyBedCharges } = useFinance();
@@ -19,7 +26,14 @@ export const AdminDashboard: React.FC = () => {
   const { assets, inventory, addAsset, updateAsset, deleteAsset } = useOTInventory();
 
   // Primary active tabs
-  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports' | 'diagnostics'>(initialTab);
+  const [subTab, setSubTab] = useState<'directory' | 'finance' | 'expenses'>('directory');
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // Search & Filtering States
   const [search, setSearch] = useState('');
@@ -219,7 +233,7 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'staff' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          Staff Directory (CRUD)
+          Employee Management (CRUD)
         </button>
         <button
           onClick={() => setActiveTab('doctors')}
@@ -244,6 +258,14 @@ export const AdminDashboard: React.FC = () => {
           }`}
         >
           Daily & Monthly Report Generator
+        </button>
+        <button
+          onClick={() => setActiveTab('diagnostics')}
+          className={`px-4 py-2 text-xs font-bold transition-all border-b-2 cursor-pointer ${
+            activeTab === 'diagnostics' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          Diagnostics & Labs
         </button>
       </div>
 
@@ -413,126 +435,175 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* STAFF DIRECTORY TAB (CRUD) */}
+      {/* EMPLOYEE MANAGEMENT TAB (CRUD) */}
       {activeTab === 'staff' && (
-        <div className="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-base font-bold text-slate-800">Hospital Staff & Salaries</h3>
-              <p className="text-xs text-slate-500">Add, edit, view and manage all nurse & support staff records</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search staff..."
-                value={staffSearch}
-                onChange={(e) => setStaffSearch(e.target.value)}
-                className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-40 sm:w-48 bg-white"
-              />
-              <select
-                value={staffRoleFilter}
-                onChange={(e) => setStaffRoleFilter(e.target.value)}
-                className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none"
-              >
-                <option value="All">All Roles</option>
-                <option value="Nurse">Nurses</option>
-                <option value="Administrator">Admin</option>
-                <option value="Lab Technician">Lab Tech</option>
-                <option value="Receptionist">Receptionist</option>
-                <option value="Pharmacist">Pharmacist</option>
-              </select>
-              <button
-                onClick={() => {
-                  setEditingStaff(null);
-                  setNewStaff({
-                    name: '',
-                    role: 'Nurse',
-                    department: '',
-                    monthlySalary: 30000,
-                    status: 'Active',
-                    joinedDate: new Date().toISOString().split('T')[0]
-                  });
-                  setIsAddingStaff(true);
-                }}
-                className="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1 cursor-pointer hover:bg-blue-700"
-              >
-                <PlusCircle className="w-4 h-4" /> Add Staff
-              </button>
-            </div>
+        <div className="space-y-6">
+          {/* Sub Navigation */}
+          <div className="flex gap-2 border-b border-slate-100 pb-2">
+            <button
+              onClick={() => setSubTab('directory')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                subTab === 'directory' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Employee Directory
+            </button>
+            <button
+              onClick={() => setSubTab('finance')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                subTab === 'finance' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Payroll & Payout Settings
+            </button>
+            <button
+              onClick={() => setSubTab('expenses')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                subTab === 'expenses' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Expenditure List
+            </button>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Name</th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Role / Department</th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Monthly Salary</th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
-                {filteredStaff.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center text-slate-400">No staff found matching criteria.</td>
-                  </tr>
-                ) : (
-                  filteredStaff.map(stf => (
-                    <tr key={stf.id} className="hover:bg-slate-50">
-                      <td className="px-6 py-3.5 font-bold text-slate-800">{stf.name}</td>
-                      <td className="px-6 py-3.5">
-                        <span className="block font-semibold text-slate-600">{stf.role}</span>
-                        <span className="text-[10px] text-slate-400 block">{stf.department}</span>
-                      </td>
-                      <td className="px-6 py-3.5 font-extrabold text-slate-800">BDT {stf.monthlySalary.toLocaleString()}</td>
-                      <td className="px-6 py-3.5">
-                        <Badge status={stf.status === 'Active' ? 'green' : stf.status === 'On Leave' ? 'yellow' : 'red'}>
-                          {stf.status}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-3.5 text-right space-x-2">
-                        <button
-                          onClick={() => setViewedEntity({ type: 'staff', data: stf })}
-                          className="text-slate-500 hover:text-slate-800 inline-flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5" /> View
-                        </button>
-                        <button
-                          onClick={() => {
-                            setEditingStaff(stf);
-                            setNewStaff({
-                              name: stf.name,
-                              role: stf.role,
-                              department: stf.department,
-                              monthlySalary: stf.monthlySalary,
-                              status: stf.status,
-                              joinedDate: stf.joinedDate
-                            });
-                            setIsAddingStaff(true);
-                          }}
-                          className="text-blue-500 hover:text-blue-700 inline-flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" /> Edit
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (confirm(`Are you sure you want to remove ${stf.name}?`)) {
-                              deleteStaff(stf.id);
-                            }
-                          }}
-                          className="text-rose-500 hover:text-rose-700 inline-flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" /> Delete
-                        </button>
-                      </td>
+          {subTab === 'directory' && (
+            <div className="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="text-base font-bold text-slate-800">Employee Management & Salaries</h3>
+                  <p className="text-xs text-slate-500">Add, edit, view and manage all nurse, support, & employee records</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder="Search employees..."
+                    value={staffSearch}
+                    onChange={(e) => setStaffSearch(e.target.value)}
+                    className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-40 sm:w-48 bg-white"
+                  />
+                  <select
+                    value={staffRoleFilter}
+                    onChange={(e) => setStaffRoleFilter(e.target.value)}
+                    className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none"
+                  >
+                    <option value="All">All Roles</option>
+                    <option value="Nurse">Nurses</option>
+                    <option value="Administrator">Admin</option>
+                    <option value="Lab Technician">Lab Tech</option>
+                    <option value="Receptionist">Receptionist</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                  </select>
+                  <button
+                    onClick={() => {
+                      setEditingStaff(null);
+                      setNewStaff({
+                        name: '',
+                        role: 'Nurse',
+                        department: '',
+                        monthlySalary: 30000,
+                        status: 'Active',
+                        joinedDate: new Date().toISOString().split('T')[0]
+                      });
+                      setIsAddingStaff(true);
+                    }}
+                    className="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1 cursor-pointer hover:bg-blue-700"
+                  >
+                    <PlusCircle className="w-4 h-4" /> Add Employee
+                  </button>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100">
+                      <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Name</th>
+                      <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Role / Department</th>
+                      <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Monthly Salary</th>
+                      <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                      <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                    {filteredStaff.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-10 text-center text-slate-400">No employees found matching criteria.</td>
+                      </tr>
+                    ) : (
+                      filteredStaff.map(stf => (
+                        <tr key={stf.id} className="hover:bg-slate-50">
+                          <td className="px-6 py-3.5 font-bold text-slate-800">{stf.name}</td>
+                          <td className="px-6 py-3.5">
+                            <span className="block font-semibold text-slate-600">{stf.role}</span>
+                            <span className="text-[10px] text-slate-400 block">{stf.department}</span>
+                          </td>
+                          <td className="px-6 py-3.5 font-extrabold text-slate-800">BDT {stf.monthlySalary.toLocaleString()}</td>
+                          <td className="px-6 py-3.5">
+                            <Badge status={stf.status === 'Active' ? 'green' : stf.status === 'On Leave' ? 'yellow' : 'red'}>
+                              {stf.status}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-3.5 text-right space-x-2">
+                            <button
+                              onClick={() => setViewedEntity({ type: 'staff', data: stf })}
+                              className="text-slate-500 hover:text-slate-800 inline-flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <Eye className="w-3.5 h-3.5" /> View
+                            </button>
+                            <button
+                              onClick={() => {
+                                setEditingStaff(stf);
+                                setNewStaff({
+                                  name: stf.name,
+                                  role: stf.role,
+                                  department: stf.department,
+                                  monthlySalary: stf.monthlySalary,
+                                  status: stf.status,
+                                  joinedDate: stf.joinedDate
+                                });
+                                setIsAddingStaff(true);
+                              }}
+                              className="text-blue-500 hover:text-blue-700 inline-flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" /> Edit
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm(`Are you sure you want to remove ${stf.name}?`)) {
+                                  deleteStaff(stf.id);
+                                }
+                              }}
+                              className="text-rose-500 hover:text-rose-700 inline-flex items-center gap-0.5 cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" /> Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {subTab === 'finance' && (
+            <div className="animate-in fade-in">
+              <EmployeeFinancePanel staffList={staffList} />
+            </div>
+          )}
+
+          {subTab === 'expenses' && (
+            <div className="animate-in fade-in">
+              <ExpensePanel />
+            </div>
+          )}
         </div>
+      )}
+
+      {/* DIAGNOSTICS & PATHOLOGY LAB TAB */}
+      {activeTab === 'diagnostics' && (
+        <DiagnosticPanel />
       )}
 
       {/* DOCTORS DIRECTORY TAB (CRUD) */}
@@ -887,7 +958,7 @@ export const AdminDashboard: React.FC = () => {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-slate-400 block font-bold">STAFF ID</span>
+                      <span className="text-slate-400 block font-bold">EMPLOYEE ID</span>
                       <span className="text-slate-800 font-mono">{viewedEntity.data.id}</span>
                     </div>
                     <div>
@@ -1019,7 +1090,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* STAFF CREATE / EDIT MODAL */}
+      {/* EMPLOYEE CREATE / EDIT MODAL */}
       {isAddingStaff && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <form
@@ -1036,7 +1107,7 @@ export const AdminDashboard: React.FC = () => {
             className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative space-y-4 animate-in fade-in zoom-in-95"
           >
             <h3 className="text-lg font-black text-slate-800 border-b border-slate-100 pb-2">
-              {editingStaff ? `Edit Staff Record` : 'Register New Staff Member'}
+              {editingStaff ? `Edit Employee Record` : 'Register New Employee'}
             </h3>
 
             <div className="space-y-3.5 text-xs">
@@ -1132,7 +1203,7 @@ export const AdminDashboard: React.FC = () => {
                 type="submit"
                 className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-700 font-bold text-xs cursor-pointer"
               >
-                {editingStaff ? 'Save Changes' : 'Register Staff'}
+                {editingStaff ? 'Save Changes' : 'Register Employee'}
               </button>
             </div>
           </form>

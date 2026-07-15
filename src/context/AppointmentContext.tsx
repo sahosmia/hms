@@ -95,13 +95,77 @@ const initialDoctors: Doctor[] = [
     availableSlots: ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '05:00 PM', '06:00 PM'],
     imageUrl: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200',
     reviews: []
+  },
+  {
+    id: 'doc-5',
+    name: 'Dr. Sabrina Khan',
+    specialty: 'Neurology Specialist',
+    experience: 14,
+    rating: 4.9,
+    reviewCount: 38,
+    fees: 1200,
+    workingDays: [1, 2, 4],
+    holidays: [],
+    availableSlots: ['10:00 AM', '11:30 AM', '02:00 PM', '04:30 PM'],
+    imageUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200',
+    reviews: []
+  },
+  {
+    id: 'doc-6',
+    name: 'Dr. Tanvir Rahman',
+    specialty: 'Orthopedics & Joint Surgeon',
+    experience: 16,
+    rating: 4.8,
+    reviewCount: 47,
+    fees: 1100,
+    workingDays: [0, 1, 3],
+    holidays: [],
+    availableSlots: ['09:00 AM', '10:30 AM', '03:00 PM', '05:00 PM'],
+    imageUrl: 'https://images.unsplash.com/photo-1612230337141-903f30a5c785?auto=format&fit=crop&q=80&w=200',
+    reviews: []
+  },
+  {
+    id: 'doc-7',
+    name: 'Dr. Nusrat Jahan',
+    specialty: 'Dermatology & Cosmetology',
+    experience: 10,
+    rating: 4.7,
+    reviewCount: 32,
+    fees: 900,
+    workingDays: [2, 3, 4],
+    holidays: [],
+    availableSlots: ['11:00 AM', '12:00 PM', '04:00 PM', '06:00 PM'],
+    imageUrl: 'https://images.unsplash.com/photo-1591604021695-0c69b7c05981?auto=format&fit=crop&q=80&w=200',
+    reviews: []
+  },
+  {
+    id: 'doc-8',
+    name: 'Dr. Ariful islam',
+    specialty: 'Nephrology & Kidney Specialist',
+    experience: 15,
+    rating: 4.6,
+    reviewCount: 22,
+    fees: 1000,
+    workingDays: [1, 3, 5],
+    holidays: [],
+    availableSlots: ['09:00 AM', '10:00 AM', '03:30 PM', '04:30 PM'],
+    imageUrl: 'https://images.unsplash.com/photo-1607990283143-e81e7a2c93ab?auto=format&fit=crop&q=80&w=200',
+    reviews: []
   }
 ];
 
 export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [doctors, setDoctors] = useState<Doctor[]>(() => {
     const stored = localStorage.getItem('hms_doctors');
-    return stored ? JSON.parse(stored) : initialDoctors;
+    if (stored) {
+      const parsed = JSON.parse(stored) as Doctor[];
+      // If some of our new preset doctors are missing from stored local state, reset/merge
+      if (parsed.length < initialDoctors.length) {
+        return initialDoctors;
+      }
+      return parsed;
+    }
+    return initialDoctors;
   });
 
   const [appointments, setAppointments] = useState<Appointment[]>(() => {

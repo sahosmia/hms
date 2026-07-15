@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAppointments } from '../../context/AppointmentContext';
 import { useFinance } from '../../context/FinanceContext';
 import { useClinicalBeds } from '../../context/ClinicalBedProvider';
@@ -11,7 +11,11 @@ import {
 } from 'lucide-react';
 import type { Staff, Doctor, HospitalAsset } from '../../types';
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  initialTab?: 'analytics' | 'staff' | 'doctors' | 'assets' | 'reports';
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'analytics' }) => {
   const { appointments, doctors, addDoctor, updateDoctorDetails, deleteDoctor } = useAppointments();
   const { beds, admissions } = useClinicalBeds();
   const { weeklyRevenue, departmentRevenue, bills, postDailyBedCharges } = useFinance();
@@ -19,7 +23,13 @@ export const AdminDashboard: React.FC = () => {
   const { assets, inventory, addAsset, updateAsset, deleteAsset } = useOTInventory();
 
   // Primary active tabs
-  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports'>(initialTab);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // Search & Filtering States
   const [search, setSearch] = useState('');
@@ -219,7 +229,7 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'staff' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          Staff Directory (CRUD)
+          Employee Management (CRUD)
         </button>
         <button
           onClick={() => setActiveTab('doctors')}
@@ -413,18 +423,18 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* STAFF DIRECTORY TAB (CRUD) */}
+      {/* EMPLOYEE MANAGEMENT TAB (CRUD) */}
       {activeTab === 'staff' && (
         <div className="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
             <div>
-              <h3 className="text-base font-bold text-slate-800">Hospital Staff & Salaries</h3>
-              <p className="text-xs text-slate-500">Add, edit, view and manage all nurse & support staff records</p>
+              <h3 className="text-base font-bold text-slate-800">Employee Management & Salaries</h3>
+              <p className="text-xs text-slate-500">Add, edit, view and manage all nurse, support, & employee records</p>
             </div>
             <div className="flex items-center gap-2">
               <input
                 type="text"
-                placeholder="Search staff..."
+                placeholder="Search employees..."
                 value={staffSearch}
                 onChange={(e) => setStaffSearch(e.target.value)}
                 className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary w-40 sm:w-48 bg-white"
@@ -456,7 +466,7 @@ export const AdminDashboard: React.FC = () => {
                 }}
                 className="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1 cursor-pointer hover:bg-blue-700"
               >
-                <PlusCircle className="w-4 h-4" /> Add Staff
+                <PlusCircle className="w-4 h-4" /> Add Employee
               </button>
             </div>
           </div>
@@ -475,7 +485,7 @@ export const AdminDashboard: React.FC = () => {
               <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
                 {filteredStaff.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center text-slate-400">No staff found matching criteria.</td>
+                    <td colSpan={5} className="px-6 py-10 text-center text-slate-400">No employees found matching criteria.</td>
                   </tr>
                 ) : (
                   filteredStaff.map(stf => (
@@ -887,7 +897,7 @@ export const AdminDashboard: React.FC = () => {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-slate-400 block font-bold">STAFF ID</span>
+                      <span className="text-slate-400 block font-bold">EMPLOYEE ID</span>
                       <span className="text-slate-800 font-mono">{viewedEntity.data.id}</span>
                     </div>
                     <div>
@@ -1019,7 +1029,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* STAFF CREATE / EDIT MODAL */}
+      {/* EMPLOYEE CREATE / EDIT MODAL */}
       {isAddingStaff && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <form
@@ -1036,7 +1046,7 @@ export const AdminDashboard: React.FC = () => {
             className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative space-y-4 animate-in fade-in zoom-in-95"
           >
             <h3 className="text-lg font-black text-slate-800 border-b border-slate-100 pb-2">
-              {editingStaff ? `Edit Staff Record` : 'Register New Staff Member'}
+              {editingStaff ? `Edit Employee Record` : 'Register New Employee'}
             </h3>
 
             <div className="space-y-3.5 text-xs">
@@ -1132,7 +1142,7 @@ export const AdminDashboard: React.FC = () => {
                 type="submit"
                 className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-700 font-bold text-xs cursor-pointer"
               >
-                {editingStaff ? 'Save Changes' : 'Register Staff'}
+                {editingStaff ? 'Save Changes' : 'Register Employee'}
               </button>
             </div>
           </form>

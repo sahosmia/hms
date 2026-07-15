@@ -5,6 +5,7 @@ import { ClinicalBedProvider } from './context/ClinicalBedProvider';
 import { OTInventoryProvider } from './context/OTInventoryContext';
 import { FinanceProvider } from './context/FinanceContext';
 import { StaffProvider } from './context/StaffContext';
+import { EmployeeFinanceProvider } from './context/EmployeeFinanceContext';
 import { AppRoutes } from './routes/AppRoutes';
 import './index.css';
 
@@ -17,7 +18,9 @@ export default function App() {
             <OTInventoryProvider>
               <FinanceProvider>
                 <StaffProvider>
-                  <AppRoutes />
+                  <EmployeeFinanceProvider>
+                    <AppRoutes />
+                  </EmployeeFinanceProvider>
                 </StaffProvider>
               </FinanceProvider>
             </OTInventoryProvider>

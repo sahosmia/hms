@@ -19,7 +19,7 @@ import { Contact } from '../features/public/Contact';
 
 import { PublicNavbar } from '../components/PublicNavbar';
 
-import { HeartPulse, LayoutDashboard, Stethoscope, History, Calendar, Bed, ClipboardList, LogOut, Users } from 'lucide-react';
+import { HeartPulse, LayoutDashboard, Stethoscope, History, Calendar, Bed, ClipboardList, LogOut, Users, FlaskConical } from 'lucide-react';
 
 const PatientGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
@@ -71,6 +71,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navItems = [
     { label: 'Dashboard Overview', path: '/admin/dashboard', icon: <LayoutDashboard className="w-4.5 h-4.5" />, roles: ['admin'] },
     { label: 'Employee Management', path: '/admin/employees', icon: <Users className="w-4.5 h-4.5" />, roles: ['admin'] },
+    { label: 'Diagnostics & Pathology', path: '/admin/diagnostics', icon: <FlaskConical className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
     { label: 'Medication & Vitals Feed', path: '/admin/nurse', icon: <ClipboardList className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
     { label: 'Bed Occupancy Grid', path: '/admin/beds', icon: <Bed className="w-4.5 h-4.5" />, roles: ['admin', 'staff'] },
     { label: 'OT Surgery & Inventory', path: '/admin/surgery', icon: <Stethoscope className="w-4.5 h-4.5" />, roles: ['admin'] },
@@ -263,6 +264,16 @@ export const AppRoutes: React.FC = () => {
           <AdminGuard>
             <AdminLayout>
               <AdminDashboard />
+            </AdminLayout>
+          </AdminGuard>
+        }
+      />
+      <Route
+        path="/admin/diagnostics"
+        element={
+          <AdminGuard>
+            <AdminLayout>
+              <AdminDashboard initialTab="diagnostics" />
             </AdminLayout>
           </AdminGuard>
         }

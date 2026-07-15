@@ -7,6 +7,7 @@ import { useOTInventory } from '../../context/OTInventoryContext';
 import { Badge } from '../../components/DataDisplays';
 import { EmployeeFinancePanel } from './EmployeeFinancePanel';
 import { ExpensePanel } from './ExpensePanel';
+import { DiagnosticPanel } from './DiagnosticPanel';
 import {
   TrendingUp, Users, DollarSign, CalendarRange, Settings,
   BellRing, PlusCircle, Trash2, Edit2, Eye, ClipboardList, ShieldAlert, Sparkles, X, Printer
@@ -14,7 +15,7 @@ import {
 import type { Staff, Doctor, HospitalAsset } from '../../types';
 
 interface AdminDashboardProps {
-  initialTab?: 'analytics' | 'staff' | 'doctors' | 'assets' | 'reports';
+  initialTab?: 'analytics' | 'staff' | 'doctors' | 'assets' | 'reports' | 'diagnostics';
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'analytics' }) => {
@@ -25,7 +26,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'an
   const { assets, inventory, addAsset, updateAsset, deleteAsset } = useOTInventory();
 
   // Primary active tabs
-  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'analytics' | 'staff' | 'doctors' | 'assets' | 'reports' | 'diagnostics'>(initialTab);
   const [subTab, setSubTab] = useState<'directory' | 'finance' | 'expenses'>('directory');
 
   useEffect(() => {
@@ -257,6 +258,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'an
           }`}
         >
           Daily & Monthly Report Generator
+        </button>
+        <button
+          onClick={() => setActiveTab('diagnostics')}
+          className={`px-4 py-2 text-xs font-bold transition-all border-b-2 cursor-pointer ${
+            activeTab === 'diagnostics' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          Diagnostics & Labs
         </button>
       </div>
 
@@ -590,6 +599,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialTab = 'an
             </div>
           )}
         </div>
+      )}
+
+      {/* DIAGNOSTICS & PATHOLOGY LAB TAB */}
+      {activeTab === 'diagnostics' && (
+        <DiagnosticPanel />
       )}
 
       {/* DOCTORS DIRECTORY TAB (CRUD) */}
